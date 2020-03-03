@@ -1,26 +1,51 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { posts: [] };
+    }
+    
+    async componentDidMount() {
+        const postData = await fetch('http://localhost:3000/posts')
+              .then(response => response.json())
+              .then(({ posts }) => posts)
+              .catch(error => {
+                  console.error(error);
+                  return [];
+              });
+
+        const posts = postData.map(post => {
+            return (
+                <div className="post">
+                  <p>Post #{post.id}</p>
+                  <p>Posted by {post.userId}</p>
+                  <p>Title: {post.title}</p>
+                  <p>{post.body}</p>
+                </div>
+            );
+        });
+        
+        this.setState({ posts });
+    }
+
+    render() {
+        return (
+            <div className="app">
+              <div className="actions">
+                <input className="create" type="text" placeholder="Enter a value or ID" value=""/>
+                <input className="update" type="text" placeholder="Enter a new value" value=""/>
+                <button>CREATE</button>
+                <button>UPDATE</button>
+                <button>DELETE</button>
+              </div>
+              <div className="list">
+                {this.state.posts}
+              </div>
+            </div>
+        );
+    }
 }
 
 export default App;
