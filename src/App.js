@@ -8,7 +8,7 @@ class App extends React.Component {
     }
     
     async componentDidMount() {
-        const postData = await fetch('http://localhost:3000/posts')
+        const postData = await fetch('/posts')
               .then(response => response.json())
               .then(({ posts }) => posts)
               .catch(error => {
